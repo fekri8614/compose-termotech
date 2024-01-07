@@ -1,6 +1,6 @@
 package info.fekri8614.thermocall.ui.features.dashboard
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,11 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -23,13 +23,11 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,7 +44,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
     val materialColorScheme = MaterialTheme.colors
     val context = LocalContext.current
     val navigation = getNavController()
-    // val viewModel = getNavViewModel<DashboardViewModel>()
+    val viewModel = getNavViewModel<DashboardViewModel>()
 
     val collapsingState = rememberCollapsingToolbarScaffoldState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -73,13 +71,21 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
         },
         content = { paddingValues ->
             Column(
-                modifier.fillMaxSize().padding(paddingValues),
-                verticalArrangement = Arrangement.Center,
+                modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "Hi there",
-                    style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                OutlinedButton(
+                    onClick = { /* Add a ThermoItem */ },
+                    content = {
+                        Text("ADD USING SHARE CODE")
+                    },
+                    border = BorderStroke(3.dp, materialColorScheme.primary),
+                    modifier = modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(0.8f)
+                        .background(MaterialTheme.colors.background)
                 )
             }
         }
