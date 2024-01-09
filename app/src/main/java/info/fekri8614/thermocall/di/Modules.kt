@@ -17,4 +17,5 @@ val myModules = module {
     single<ThermoRepository> { ThermoRepositoryImpl(get(), get()) }
 
     viewModel { DashboardViewModel(get()) }
+
 }

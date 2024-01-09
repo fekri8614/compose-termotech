@@ -14,15 +14,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.burnoo.cokoin.navigation.getNavController
-import dev.burnoo.cokoin.navigation.getNavViewModel
+import info.fekri8614.thermocall.ui.theme.md_theme_light_secondaryContainer
+import info.fekri8614.thermocall.ui.theme.md_theme_light_tertiary
 import info.fekri8614.thermocall.util.MyScreens
 import kotlinx.coroutines.launch
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
@@ -44,15 +48,24 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
     val materialColorScheme = MaterialTheme.colors
     val context = LocalContext.current
     val navigation = getNavController()
-    val viewModel = getNavViewModel<DashboardViewModel>()
+    //val viewModel = getNavViewModel<DashboardViewModel>()
 
     val collapsingState = rememberCollapsingToolbarScaffoldState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scaffoldState = rememberScaffoldState(drawerState = drawerState)
     val scope = rememberCoroutineScope()
 
+    SideEffect {
+        uiController.setStatusBarColor(md_theme_light_tertiary)
+    }
+
     Scaffold(
         scaffoldState = scaffoldState,
+        topBar = {
+            DashboardTopAppBar(materialColorScheme.primary) {
+                scope.launch { scaffoldState.drawerState.open() }
+            }
+        },
         drawerContent = {
             DrawerContent(onItemClicked = { id ->
                 scope.launch {
@@ -61,34 +74,42 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                 navigation.navigate(id)
             })
         },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                text = { Text(text = "Open Drawer") },
-                icon = { Icon(Icons.Default.Menu, contentDescription = "Menu") },
-                onClick = { scope.launch { scaffoldState.drawerState.open() } },
-                modifier = modifier.padding(bottom = 32.dp)
-            )
-        },
         content = { paddingValues ->
             Column(
                 modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(paddingValues = paddingValues)
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 OutlinedButton(
                     onClick = { /* Add a ThermoItem */ },
                     content = {
-                        Text("ADD USING SHARE CODE")
+                        Text(
+                            "Add using share code".uppercase(),
+                            modifier.padding(8.dp)
+                        )
                     },
                     border = BorderStroke(3.dp, materialColorScheme.primary),
                     modifier = modifier
-                        .padding(8.dp)
-                        .fillMaxWidth(0.8f)
-                        .background(MaterialTheme.colors.background)
+                        .fillMaxWidth(0.9f)
                 )
             }
         }
+    )
+}
+
+@Composable
+fun DashboardTopAppBar(background: Color, onIconClicked: () -> Unit) {
+    TopAppBar(
+        navigationIcon = {
+            IconButton(onClick = onIconClicked) {
+                Icon(imageVector = Icons.Default.Menu, contentDescription = null)
+            }
+        },
+        title = { Text(text = "Dashboard") },
+        backgroundColor = background,
+        elevation = 0.dp
     )
 }
 
