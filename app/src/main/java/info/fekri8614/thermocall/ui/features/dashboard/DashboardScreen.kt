@@ -11,13 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Card
 import androidx.compose.material.DrawerValue
-import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -36,9 +39,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dev.burnoo.cokoin.navigation.getNavController
-import info.fekri8614.thermocall.ui.theme.md_theme_light_secondaryContainer
+import info.fekri8614.thermocall.model.data.ThermoItem
+import info.fekri8614.thermocall.ui.theme.Shapes
 import info.fekri8614.thermocall.ui.theme.md_theme_light_tertiary
 import info.fekri8614.thermocall.util.MyScreens
+import info.fekri8614.thermocall.util.TextBlackBoldx16
+import info.fekri8614.thermocall.util.TextBlackNormalx24
+import info.fekri8614.thermocall.util.TextLightGrayNormalx8
+import info.fekri8614.thermocall.util.thermoItemList
 import kotlinx.coroutines.launch
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 
@@ -82,6 +90,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
                     .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                ScrollableThermoItems(thermoItemList)
                 OutlinedButton(
                     onClick = { /* Add a ThermoItem */ },
                     content = {
@@ -98,6 +107,51 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
         }
     )
 }
+
+// -----------------------------------------------=-------------------------------
+
+@Composable
+fun ScrollableThermoItems(thermoItems: List<ThermoItem>) {
+    LazyColumn {
+        items(thermoItems) { thermoItem ->
+            DashboardThermoItem(data = thermoItem)
+        }
+    }
+}
+
+@Composable
+fun DashboardThermoItem(data: ThermoItem) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        elevation = 2.dp,
+        shape = Shapes.medium
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = data.title, style = TextBlackNormalx24)
+                Text(
+                    text = data.kind ?: "",
+                    color = data.kindColor ?: MaterialTheme.colors.secondary
+                )
+                Text(data.time, style = TextLightGrayNormalx8)
+            }
+            Card() {
+                Surface() {
+                    Text(data.temperature.toString(), style = TextBlackBoldx16)
+                }
+            }
+        }
+    }
+}
+
+// -=----------------------------------------------------------------------------
 
 @Composable
 fun DashboardTopAppBar(background: Color, onIconClicked: () -> Unit) {
